@@ -13,6 +13,13 @@ pipeline {
                 sh 'mvn test'
             }
         }
+
+         stage('Static code analysis') {
+            steps {
+                // Sonarcloud analysis
+                sh 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Utkarash-khare_jenkins18_L1'
+            }
+        }
         
        stage('Build') {
             steps {
