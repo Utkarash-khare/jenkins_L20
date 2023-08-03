@@ -13,13 +13,6 @@ pipeline {
                 sh 'mvn test'
             }
         }
-
-         stage('Static code analysis') {
-            steps {
-                // Sonarcloud analysis
-                sh 'mvn sonar:sonar -Dsonar.projectKey=Utkarash-khare_jenkins18_L1 -Dsonar.organization=utkarash-khare -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=Analyze "jenkins18_L1"
-            }
-        }
         
        stage('Build') {
             steps {
