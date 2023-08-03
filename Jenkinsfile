@@ -17,7 +17,7 @@ pipeline {
          stage('Static code analysis') {
             steps {
                 // Sonarcloud analysis
-                sh 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Utkarash-khare_jenkins18_L1'
+                sh 'mvn sonar:sonar -Dsonar.projectKey=Utkarash-khare_jenkins18_L1 -Dsonar.organization=utkarash-khare -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=Analyze "jenkins18_L1"
             }
         }
         
