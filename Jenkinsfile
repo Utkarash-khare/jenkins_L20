@@ -6,14 +6,14 @@ pipeline {
          stage('Test') {
             steps {
                 // Run the unit tests using Maven
-                sh 'mvn test'
+                sh '/opt/maven mvn test'
             }
         }
         
        stage('Build') {
             steps {
                 // Clean and compile the project using Maven
-                sh 'mvn clean install package'
+                sh '/opt/maven mvn clean install package'
             }
         }
         
