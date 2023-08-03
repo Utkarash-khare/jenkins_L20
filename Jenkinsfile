@@ -1,19 +1,23 @@
 pipeline {
     agent any
 
+       environment {
+        PATH = "/opt/maven/bin:${env.PATH}"
+    }
+
     stages {
 
          stage('Test') {
             steps {
                 // Run the unit tests using Maven
-                sh '/opt/maven mvn test'
+                sh 'mvn test'
             }
         }
         
        stage('Build') {
             steps {
                 // Clean and compile the project using Maven
-                sh '/opt/maven mvn clean install package'
+                sh 'clean install package'
             }
         }
         
