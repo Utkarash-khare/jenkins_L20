@@ -14,13 +14,6 @@ pipeline {
                         sh "docker push ${DOCKER_USERNAME}/sample-webapp:jenkins_L19"           
             }
         }
-    }
-
-        stage('Archive') {
-            steps {
-                // Archive the generated WAR file
-                archiveArtifacts artifacts: 'target/sample-webapp.war'
-            }
-        }
+      }
     }
 }
