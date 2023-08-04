@@ -2,7 +2,7 @@
 FROM tomcat:latest
 
 # Set the working directory to Tomcat's webapps directory
-WORKDIR $CATALINA_HOME/webapps
+WORKDIR /usr/local/tomcat/webapps
 
 # Copy the WAR file from the local directory to the container's webapps directory
 COPY target/sample-webapp.war .
