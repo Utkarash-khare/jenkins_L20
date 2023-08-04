@@ -30,6 +30,15 @@ pipeline {
         }
     }
 
+        stage('Run Container') {
+            steps {
+                // Run the Docker container
+                script {
+                    docker.image('sample-webapp:jenkins_L19').run('-p 8080:80')
+                }
+            }
+        }
+
         stage('Archive') {
             steps {
                 // Archive the generated WAR file
