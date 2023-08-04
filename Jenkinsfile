@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+     parameters {
+        string(name: 'DOCKERHUB_CREDENTIALS', defaultValue: '', description: 'Docker Hub credentials ID')
+    }
+
     stages {
         stage('Build and Publish') {
             steps {
