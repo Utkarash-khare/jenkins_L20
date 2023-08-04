@@ -3,6 +3,7 @@ FROM maven:latest AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
+COPY target/sample-webapp.war .
 RUN mvn clean package
 
 # Stage 2: Create final image using Tomcat
