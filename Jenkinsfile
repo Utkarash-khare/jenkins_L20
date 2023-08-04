@@ -20,16 +20,15 @@ pipeline {
             }
         }
 
-        stage('Build and Publish Image') {
+        stage('Build and Publish') {
             steps {
-                // Authenticate with Docker Hub using Docker login
-                withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB_CREDENTIALS', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh "docker build -t $DOCKER_USERNAME/sample-webapp:L19 ."
-                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                    sh "docker push $DOCKER_USERNAME/sample-webapp:L19"
-                }
+     withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        sh "docker build -t ${DOCKER_USERNAME}/sample-webapp:jenkins ."
+                        sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                        sh "docker push ${DOCKER_USERNAME}/sample-webapp:jenkins"           
             }
         }
+    }
 
         stage('Archive') {
             steps {
