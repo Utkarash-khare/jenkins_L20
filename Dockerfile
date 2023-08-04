@@ -1,14 +1,13 @@
-# Use the official Tomcat image as the base image
+# Stage 1: Build Java web application using Maven
+FROM maven:latest AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package
+
+# Stage 2: Create final image using Tomcat
 FROM tomcat:latest
-
-# Set the working directory to Tomcat's webapps directory
 WORKDIR /usr/local/tomcat/webapps
-
-# Copy the WAR file from the local directory to the container's webapps directory
-COPY target/sample-webapp.war .
-
-# Expose the default Tomcat port (8080)
+COPY --from=build /app/target/sample-webapp.war .
 EXPOSE 8080
-
-# Start Tomcat
 CMD ["catalina.sh", "run"]
