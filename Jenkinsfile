@@ -25,5 +25,21 @@ pipeline {
                 }
             }
         }
+
+        
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    def NAMESPACE = env.BRANCH_NAME
+
+                    // Replace the placeholder in the template with the actual namespace
+                    sh "kubectl config set-context --current --namespace=${NAMESPACE}"
+
+                    // Apply the modified YAML file to Kubernetes
+                    sh "kubectl apply -f manifest.yaml"
+                }
+            }
+        }
     }
 }
+
