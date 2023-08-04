@@ -28,13 +28,14 @@ pipeline {
             }
         }
 
-        stage('Publish Image') {
+        stage('Push to Docker Hub') {
             steps {
                 // Authenticate with Docker Hub using Docker login
-                sh 'docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)'
-
+                withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB_CREDENTIALS', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
                 // Push the Docker image to Docker Hub
-                sh 'docker push $(DOCKER_USERNAME)/sample-webapp:L19'
+                    sh 'docker push $(DOCKER_USERNAME)/sample-webapp:L19'
+               }
             }
         }
         
