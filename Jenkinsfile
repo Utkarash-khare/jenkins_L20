@@ -1,49 +1,45 @@
 pipeline {
     agent any
 
-    environment {
-        PATH = "/opt/maven/bin:${env.PATH}"
+ parameters {
+        string(name: 'DOCKERHUB_CREDENTIALS', defaultValue: '', description: 'Docker Hub credentials ID')
     }
 
     stages {
-        stage('Test') {
-            steps {
-                // Run the unit tests using Maven
-                sh 'mvn test'
-            }
-        }
 
-        stage('Build App') {
+        stage('Build & Publish') {
             steps {
-                // Clean and compile the project using Maven
-                sh 'mvn clean install package'
-            }
-        }
-
-        stage('Build and Publish') {
-            steps {
-     withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh "docker build -t ${DOCKER_USERNAME}/sample-webapp:jenkins_L19 ."
-                        sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
-                        sh "docker push ${DOCKER_USERNAME}/sample-webapp:jenkins_L19"           
-            }
-        }
-    }
-
-        stage('Run Container') {
-            steps {
-                // Run the Docker container
                 script {
-                    docker.image('khareutkarsh/sample-webapp:jenkins_L19').run('-p 8080:80')
+                    // Get the current Git branch name
+                    def branchName = env.BRANCH_NAME
+
+                    // Construct the Docker image name based on the branch name
+                    def dockerImageName = "khareutkarsh/${branchName}-sample-webapp:L20_jenkins"
+
+                    // Using the global credentials directly in the `withCredentials` block
+                    withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        sh "docker build -t ${dockerImageName} ."
+                        sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                        sh "docker push ${dockerImageName}"
+                    }
                 }
             }
         }
 
-        stage('Archive') {
+        
+        stage('Deploy to Kubernetes') {
             steps {
-                // Archive the generated WAR file
-                archiveArtifacts artifacts: 'target/sample-webapp.war'
+                script {
+                    def NAMESPACE = env.BRANCH_NAME
+
+                    // Replace the placeholder in the template with the actual namespace
+                    sh "kubectl config set-context --current --namespace=${NAMESPACE}"
+
+                    // Apply the modified YAML file to Kubernetes
+                    sh "kubectl apply -f manifest.yaml"
+                }
             }
         }
     }
 }
+
